@@ -260,7 +260,7 @@ $("budgets").addEventListener("change",e=>{const k=e.target.dataset.b;if(!k)retu
   if(v)state.budgets[k]=v;else delete state.budgets[k];save();render();toast("Đã lưu ngân sách")});
 $("members").addEventListener("change",e=>{const m=e.target.value.split(",").map(s=>s.trim()).filter(Boolean);
   state.members=m.length?m:["Chung"];save();fillMembers();toast("Đã lưu thành viên")});
-function download(name,text,type){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function download(name,text,type){if(window.AndroidBridge){toast(AndroidBridge.saveFile(name,type,text));return}const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 $("export").onclick=()=>download(`thu-chi-${today()}.json`,JSON.stringify(state,null,2),"application/json");
 $("csv").onclick=()=>{const rows=[["Ngày","Loại","Danh mục","Số tiền","Người","Ghi chú"]];
   state.tx.filter(t=>t.date.startsWith(month)).sort((a,b)=>a.date.localeCompare(b.date)).forEach(t=>rows.push([t.date,t.type==="in"?"Thu":"Chi",(CAT[t.cat]||{n:t.cat}).n,t.amount,t.who||"",t.note||""]));
