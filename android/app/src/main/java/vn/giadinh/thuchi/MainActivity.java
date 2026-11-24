@@ -70,6 +70,14 @@ public class MainActivity extends Activity {
     }
 
     @Override
+    public void onBackPressed() {
+        // Hỏi trang web trước: đóng bảng / về tab Nhập; nếu trang không xử lý thì thoát app
+        web.evaluateJavascript("window.onAndroidBack ? window.onAndroidBack() : false", v -> {
+            if (!"true".equals(v)) MainActivity.super.onBackPressed();
+        });
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle out) {
         super.onSaveInstanceState(out);
         web.saveState(out);
